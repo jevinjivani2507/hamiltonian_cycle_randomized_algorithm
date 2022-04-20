@@ -8,6 +8,8 @@ import os
 import networkx as nx
 from dataclasses import replace
 
+from sympy import N
+
 
 isValid=0
 while(isValid==0):
@@ -63,12 +65,35 @@ print(edges)
 ### Adjacency graph of edges for faster computation.
 print("Printing adjacency matrix of graph:")
 
-### Using networkx library to convert from numpy Array
-adj=nx.to_numpy_matrix(nx.from_edgelist(np.array(edges)))
-print(adj)
+mymat = []
+
+
+### Create matrix of N x N with zeros
+i=0
+while(i<number):
+    j=0
+    newRow=[]
+    while(j<number):
+        newRow.append(0)
+        j+=1
+    mymat.append(newRow)
+    i+=1
+
+
+### Manually converting to adjacency matrix
+for edge in edges:
+    mymat[edge[0]][edge[1]] = 1
+    mymat[edge[1]][edge[0]] = 1
+
+
+
+###### Deprecated networkx function because of node number inconsistency.
+# ### Using networkx library to convert from numpy Array
+# adj=nx.to_numpy_matrix(nx.from_edgelist(np.array(edges)))
+# print(adj)
 
 ### Convert Numpy array to Vanilla Python List.
-adjList = adj.tolist()
+adjList = mymat
 
 
 def main():
@@ -82,7 +107,7 @@ def main():
             # adj = np.random.randint(0, 2, (i, i))
             # adj = adj
             # a random directed graph
-            G = nx.from_numpy_matrix(adj)  # generator
+            G = nx.from_numpy_matrix(np.array(mymat))  # generator
 
             # adj = (nx.to_numpy_matrix(nx.from_edgelist(np.array(edges)))).tolist()
             nx.draw(G,with_labels=True,font_color="whitesmoke")  # draw))
@@ -109,17 +134,15 @@ def main():
 
                 ### Checking other nodes in order
                 for next in range(n):
-                    print(next," does edge exist =",A[curr][next], " if visited =",Visited[next])
+                    print(curr,next," does edge exist =",A[curr][next], " if visited =",Visited[next])
 
-                    print("A")
-                    print(A)
-                    print("A[curr]")
-                    print(A[curr])
-                    print("A[curr][next]")
-                    print(A[curr][next])
-                    # print("A[curr][next][0]")
-                    # print(A[curr][next][0])
-
+                    # print("A")
+                    # print(A)
+                    # print("A[curr]")
+                    # print(A[curr])
+                    # print("A[curr][next]")
+                    # print(A[curr][next])
+                    
                     if A[curr][next] == 1 and not Visited[next]:
                         if hamilton(next):
                             return True
